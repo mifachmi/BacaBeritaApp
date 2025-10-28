@@ -38,6 +38,12 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            // third-party
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+            implementation("app.cash.sqldelight:runtime:2.1.0")
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
