@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -40,7 +41,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             // third-party
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             implementation("app.cash.sqldelight:runtime:2.1.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")

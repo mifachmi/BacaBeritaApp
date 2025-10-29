@@ -1,6 +1,7 @@
 package id.mifachmi.bacaberitaapp.ui.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,27 +27,42 @@ import bacaberitaapp.composeapp.generated.resources.example
 import bacaberitaapp.composeapp.generated.resources.ic_audio
 import bacaberitaapp.composeapp.generated.resources.ic_bookmark
 import bacaberitaapp.composeapp.generated.resources.ic_share
+import id.mifachmi.bacaberitaapp.data.model.Article
+import id.mifachmi.bacaberitaapp.data.model.BreakingNews
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ArticleCard(
-    isBreakingNews: Boolean = false
+    isBreakingNews: Boolean = false,
+    data: BreakingNews,
+    articleData: Article? = null,
+    onArticleClick: (Article) -> Unit,
+    onShareClick: (Article) -> Unit,
+    onBookmarkClick: (Article) -> Unit,
+    onAudioClick: (Article) -> Unit
 ) {
+    val article = if (isBreakingNews) Article(
+        title = data.headline,
+        publishedTime = data.publishedTime
+    ) else articleData
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { article?.let { onArticleClick(it) } },
     ) {
         // Title
         Text(
-            text = "Celaka 12! Ini 12 Kisah Pembunuhan dan Pesan di Baliknya",
+            text = articleData?.title ?: data.headline,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = if (isBreakingNews) TextAlign.Center else TextAlign.Start,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp)
         )
         // Description
         if (isBreakingNews) {
             Text(
-                text = "Kasus Pembunuhan Global: Ekonomi Lemah, Pembunuhan Bertambah",
+                text = data.subheadline,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
@@ -63,7 +79,7 @@ fun ArticleCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "5 menit lalu",
+                text = articleData?.publishedTime ?: data.publishedTime,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light
             )
@@ -72,7 +88,7 @@ fun ArticleCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy((-4).dp)
             ) {
-                IconButton(onClick = { println("Button Share clicked") }) {
+                IconButton(onClick = { article?.let { data -> onShareClick(data) } }) {
                     Image(
                         painter = painterResource(Res.drawable.ic_share),
                         contentDescription = "Button Share",
@@ -80,7 +96,7 @@ fun ArticleCard(
                     )
                 }
 
-                IconButton(onClick = { println("Button Bookmark clicked") }) {
+                IconButton(onClick = { article?.let { data -> onBookmarkClick(data) } }) {
                     Image(
                         painter = painterResource(Res.drawable.ic_bookmark),
                         contentDescription = "Button Bookmark",
@@ -88,7 +104,7 @@ fun ArticleCard(
                     )
                 }
 
-                IconButton(onClick = { println("Button Audio clicked") }) {
+                IconButton(onClick = { article?.let { data -> onAudioClick(data) } }) {
                     Image(
                         painter = painterResource(Res.drawable.ic_audio),
                         contentDescription = "Button Audio",
@@ -99,27 +115,21 @@ fun ArticleCard(
         }
 
         if (isBreakingNews) {
-            if (isBreakingNews) {
-                Image(
-                    painter = painterResource(Res.drawable.example),
-                    contentDescription = "Banner News",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
+            Image(
+                painter = painterResource(Res.drawable.example),
+                contentDescription = "Banner News",
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
+            )
         }
 
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = if (isBreakingNews) 16.dp else 0.dp),
+                .padding(start = 16.dp, end = 16.dp, top = if (isBreakingNews) 16.dp else 0.dp),
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
         )
-
-        if (!isBreakingNews) {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
     }
 }

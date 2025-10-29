@@ -1,14 +1,20 @@
 package id.mifachmi.bacaberitaapp.util
 
+import bacaberitaapp.composeapp.generated.resources.Res
 import id.mifachmi.bacaberitaapp.data.model.BreakingNews
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.InternalResourceApi
-import org.jetbrains.compose.resources.readResourceBytes
 
-class JsonLoader {
-    @OptIn(InternalResourceApi::class)
+val AppJson: Json = Json {
+    ignoreUnknownKeys = true
+    coerceInputValues = true
+}
+
+class JsonLoader(
+    private val json: Json = AppJson
+) {
     suspend fun loadBreakingNews(): BreakingNews {
-        val bytes = readResourceBytes("files/breaking_news.json")
-        return Json.decodeFromString(bytes.decodeToString())
+        val bytes = Res.readBytes("files/breaking_news.json")
+        val jsonStr = bytes.decodeToString()
+        return json.decodeFromString<BreakingNews>(jsonStr)
     }
 }
