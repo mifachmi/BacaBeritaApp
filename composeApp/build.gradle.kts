@@ -29,6 +29,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.navigation.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -45,6 +46,8 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             implementation("app.cash.sqldelight:runtime:2.1.0")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
+            implementation("io.ktor:ktor-utils:2.3.11")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

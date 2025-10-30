@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.breaking_news
 import id.mifachmi.bacaberitaapp.ui.component.ArticleCard
@@ -19,7 +20,8 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BreakingNews(
-    vm: BreakingNewsViewModel
+    vm: BreakingNewsViewModel,
+    navController: NavController
 ) {
     val news = vm.news.collectAsState().value
     LaunchedEffect(Unit) { vm.load() }
@@ -39,7 +41,7 @@ fun BreakingNews(
             ArticleCard(
                 isBreakingNews = true,
                 data = it,
-                onArticleClick = {article -> print(article.title)},
+                onArticleClick = { article -> navController.navigate("detailNews/${article}") },
                 onShareClick = {article -> print(article.title)},
                 onBookmarkClick = {article -> print(article.title)},
                 onAudioClick = {article -> print(article.title)},
