@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.breaking_news
 import id.mifachmi.bacaberitaapp.ui.component.ArticleCard
+import id.mifachmi.bacaberitaapp.util.rememberShareHandler
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
 import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.painterResource
@@ -24,6 +25,7 @@ fun BreakingNews(
     navController: Navigator
 ) {
     val news = vm.news.collectAsState().value
+    val shareHandler = rememberShareHandler()
     LaunchedEffect(Unit) { vm.load() }
 
     Column(
@@ -42,7 +44,9 @@ fun BreakingNews(
                 isBreakingNews = true,
                 data = it,
                 onArticleClick = { article -> navController.navigate("/detailNews/${article.title}") },
-                onShareClick = {article -> print(article.title)},
+                onShareClick = { article ->
+                    shareHandler.shareText(article.title, "Bagikan Artikel")
+                },
                 onBookmarkClick = {article -> print(article.title)},
                 onAudioClick = {article -> print(article.title)},
             )
@@ -56,7 +60,9 @@ fun BreakingNews(
                 ),
                 articleData = article,
                 onArticleClick = { article -> print(article.title) },
-                onShareClick = { article -> print(article.title) },
+                onShareClick = { article ->
+                    shareHandler.shareText(article.title, "Bagikan Artikel")
+                },
                 onBookmarkClick = { article -> print(article.title) },
                 onAudioClick = { article -> print(article.title) },
             )
