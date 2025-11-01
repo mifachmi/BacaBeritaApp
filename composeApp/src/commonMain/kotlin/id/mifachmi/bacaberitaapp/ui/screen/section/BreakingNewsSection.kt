@@ -1,4 +1,4 @@
-package id.mifachmi.bacaberitaapp.ui.screen
+package id.mifachmi.bacaberitaapp.ui.screen.section
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,7 @@ import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun BreakingNews(
+fun BreakingNewsSection(
     vm: BreakingNewsViewModel,
     navController: Navigator
 ) {

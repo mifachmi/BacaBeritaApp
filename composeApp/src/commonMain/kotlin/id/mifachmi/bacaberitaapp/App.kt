@@ -67,7 +67,7 @@ fun App() {
                                 onClick = {
                                     navigator.navigate(route = destination.route)
                                 },
-                                icon = { /* Your Icon Here */ },
+                                icon = { },
                                 label = { Text(destination.label) }
                             )
                         }

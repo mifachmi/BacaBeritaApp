@@ -18,6 +18,8 @@ kotlinx-coroutines = "1.8.1"
 sqlDelight = "2.0.2"
 coil = "3.0.0-alpha06"
 ktor = "2.3.12"
+constraintlayout_compose_version = "1.1.1"
+constraintlayout = "2.2.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +42,8 @@ sqlDelight-native-driver = { module = "app.cash.sqldelight:native-driver", versi
 sqlDelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout_compose_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
