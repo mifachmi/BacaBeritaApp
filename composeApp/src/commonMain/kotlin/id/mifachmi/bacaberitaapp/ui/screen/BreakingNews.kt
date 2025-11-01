@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -26,29 +27,33 @@ fun BreakingNews(
 ) {
     val news = vm.news.collectAsState().value
     val shareHandler = rememberShareHandler()
+
+    val bookmarkedTitles by vm.bookmarkedTitles.collectAsState()
+
     LaunchedEffect(Unit) { vm.load() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Breaking News Header Image
         Image(
             painter = painterResource(Res.drawable.breaking_news),
-            contentDescription = "App Logo",
+            contentDescription = "Breaking News Header",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.size(width = 120.dp, height = 60.dp)
         )
 
+        // Main breaking news article
         news?.let {
             ArticleCard(
                 isBreakingNews = true,
                 data = it,
+                isBookmarked = it.headline in bookmarkedTitles,
                 onArticleClick = { article -> navController.navigate("/detailNews/${article.title}") },
-                onShareClick = { article ->
-                    shareHandler.shareText(article.title, "Bagikan Artikel")
-                },
-                onBookmarkClick = {article -> print(article.title)},
-                onAudioClick = {article -> print(article.title)},
+                onShareClick = { article -> shareHandler.shareText(article.title, "Bagikan Artikel") },
+                onBookmarkClick = { article -> vm.onBookmarkToggled(article) },
+                onAudioClick = { article -> print(article.title) }
             )
         }
 
@@ -59,12 +64,11 @@ fun BreakingNews(
                     publishedTime = article.publishedTime
                 ),
                 articleData = article,
-                onArticleClick = { article -> print(article.title) },
-                onShareClick = { article ->
-                    shareHandler.shareText(article.title, "Bagikan Artikel")
-                },
-                onBookmarkClick = { article -> print(article.title) },
-                onAudioClick = { article -> print(article.title) },
+                isBookmarked = article.title in bookmarkedTitles,
+                onArticleClick = { a -> navController.navigate("/detailNews/${a.title}") },
+                onShareClick = { article -> shareHandler.shareText(article.title, "Bagikan Artikel") },
+                onBookmarkClick = { article -> vm.onBookmarkToggled(article) },
+                onAudioClick = { article -> print(article.title) }
             )
         }
     }

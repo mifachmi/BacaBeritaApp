@@ -1,30 +1,49 @@
 package id.mifachmi.bacaberitaapp.viewmodel
 
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 import id.mifachmi.bacaberitaapp.data.local.BookmarkRepository
 import id.mifachmi.bacaberitaapp.data.local.SavedArticle
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import moe.tlaster.precompose.viewmodel.ViewModel
+import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class BookmarksViewModel(private val bookmarkRepository: BookmarkRepository) :
     ViewModel() {
 
-    private val _items = MutableStateFlow<List<SavedArticle>>(emptyList())
-    val items = _items.asStateFlow()
+    // This StateFlow holds the complete list of bookmarked articles
+    val bookmarkedArticles: StateFlow<List<SavedArticle>> = bookmarkRepository.allBookmarks
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = emptyList()
+        )
 
-    fun load() {
-        // 3. Use viewModelScope for coroutines
+    // A StateFlow that holds only the titles of bookmarked articles for quick lookups
+    val bookmarkedTitles: StateFlow<Set<String>> = bookmarkRepository.allBookmarks
+        .map { articles -> articles.map { it.title }.toSet() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = emptySet()
+        )
+
+    fun addBookmark(article: SavedArticle) {
         viewModelScope.launch {
-            _items.value = bookmarkRepository.getAll()
+            bookmarkRepository.addOrUpdate(
+                title = article.title,
+                publishedTime = article.publishedTime,
+                imageUrl = article.imageUrl,
+                description = article.description
+            )
         }
     }
 
-    fun unbookmark(id: String) {
+    fun unbookmark(title: String) {
         viewModelScope.launch {
-            bookmarkRepository.removeById(id)
-            load() // Reload the list after removing an item
+            bookmarkRepository.removeByTitle(title)
         }
     }
 }

@@ -19,35 +19,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.ic_bookmark_filled
-import id.mifachmi.bacaberitaapp.data.local.BookmarkRepository
 import id.mifachmi.bacaberitaapp.viewmodel.BookmarksViewModel
-import moe.tlaster.precompose.viewmodel.viewModel
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarksScreen(
-    // 1. Accept the BookmarkRepository provided by AppNavHost
-    bookmarkRepository: BookmarkRepository,
+    bookmarksViewModel: BookmarksViewModel,
     onOpenDetail: (String) -> Unit
 ) {
-    // 2. Create the ViewModel here using the creator lambda
-    val vm: BookmarksViewModel = viewModel(
-        modelClass = BookmarksViewModel::class, // <-- ADD THIS LINE
-        keys = listOf(bookmarkRepository)
-    ) {
-        BookmarksViewModel(bookmarkRepository)
-    }
-
-    val items by vm.items.collectAsState()
-    LaunchedEffect(Unit) { vm.load() }
+    val items by bookmarksViewModel.bookmarkedArticles.collectAsState()
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Bookmarks") }) }
@@ -71,12 +58,12 @@ fun BookmarksScreen(
                     .padding(padding),
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
-                items(items, key = { it.id }) { saved ->
+                items(items, key = { it.title }) { saved ->
                     ListItem(
                         headlineContent = { Text(saved.title) },
                         supportingContent = { Text(saved.publishedTime) },
                         trailingContent = {
-                            IconButton(onClick = { vm.unbookmark(saved.id) }) {
+                            IconButton(onClick = { bookmarksViewModel.unbookmark(saved.title) }) {
                                 Icon(
                                     painterResource(Res.drawable.ic_bookmark_filled),
                                     contentDescription = "Unbookmark"

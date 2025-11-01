@@ -1,18 +1,33 @@
 package id.mifachmi.bacaberitaapp.data.local
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import id.mifachmi.bacaberitaapp.database.AppDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class BookmarkRepository(private val db: AppDatabase) {
-    fun getAll(): List<SavedArticle> =
-        db.bookmarkQueries.selectAll().executeAsList().map {
-            SavedArticle(
-                id = it.id,
-                title = it.title,
-                publishedTime = it.publishedTime,
-                imageUrl = it.imageUrl,
-                description = it.description
-            )
-        }
+class BookmarkRepository(
+    private val db: AppDatabase,
+    scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+) {
+    // Expose a Flow of all saved articles
+    val allBookmarks: Flow<List<SavedArticle>> =
+        db.bookmarkQueries.selectAll()
+            .asFlow()
+            .mapToList(scope.coroutineContext)
+            .map { articles ->
+                articles.map {
+                    SavedArticle(
+                        id = it.id,
+                        title = it.title,
+                        publishedTime = it.publishedTime,
+                        imageUrl = it.imageUrl,
+                        description = it.description
+                    )
+                }
+            }
 
     fun addOrUpdate(
         title: String,
@@ -30,11 +45,12 @@ class BookmarkRepository(private val db: AppDatabase) {
         )
     }
 
-    fun removeById(id: String) {
-        db.bookmarkQueries.deleteBookmark(id)
+    fun removeByTitle(title: String) {
+        db.bookmarkQueries.deleteBookmark(title)
     }
 
-    fun removeByTitleAndTime(title: String, publishedTime: String) {
-        removeById(stableId(title, publishedTime))
+    // Helper to generate a consistent ID
+    fun stableId(title: String, publishedTime: String): String {
+        return "${title}_${publishedTime}".hashCode().toString()
     }
 }

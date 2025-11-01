@@ -26,6 +26,7 @@ import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.example
 import bacaberitaapp.composeapp.generated.resources.ic_audio
 import bacaberitaapp.composeapp.generated.resources.ic_bookmark
+import bacaberitaapp.composeapp.generated.resources.ic_bookmark_filled
 import bacaberitaapp.composeapp.generated.resources.ic_share
 import id.mifachmi.bacaberitaapp.data.model.Article
 import id.mifachmi.bacaberitaapp.data.model.BreakingNews
@@ -36,6 +37,7 @@ fun ArticleCard(
     isBreakingNews: Boolean = false,
     data: BreakingNews,
     articleData: Article? = null,
+    isBookmarked: Boolean = false,
     onArticleClick: (Article) -> Unit,
     onShareClick: (Article) -> Unit,
     onBookmarkClick: (Article) -> Unit,
@@ -59,6 +61,7 @@ fun ArticleCard(
             textAlign = if (isBreakingNews) TextAlign.Center else TextAlign.Start,
             modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp)
         )
+
         // Description
         if (isBreakingNews) {
             Text(
@@ -97,8 +100,13 @@ fun ArticleCard(
                 }
 
                 IconButton(onClick = { article?.let { data -> onBookmarkClick(data) } }) {
+                    val bookmarkIcon = if (isBookmarked) {
+                        Res.drawable.ic_bookmark_filled
+                    } else {
+                        Res.drawable.ic_bookmark
+                    }
                     Image(
-                        painter = painterResource(Res.drawable.ic_bookmark),
+                        painter = painterResource(bookmarkIcon),
                         contentDescription = "Button Bookmark",
                         modifier = Modifier.size(48.dp)
                     )

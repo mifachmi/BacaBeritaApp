@@ -27,12 +27,6 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    // 📰 Content sections
-                    // Navigation Bar
-                    // Scrollable Horizontally Tabs
-
-                    // This NavHost manages the content within the HomeScreen, allowing navigation
-                    // from the breaking news list to the detail screen.
                     BreakingNews(
                         vm = vm,
                         navController = navigator

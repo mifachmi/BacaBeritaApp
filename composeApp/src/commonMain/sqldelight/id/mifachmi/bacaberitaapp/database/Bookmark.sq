@@ -14,4 +14,4 @@ INSERT OR REPLACE INTO bookmark(id, title, publishedTime, imageUrl, description)
 VALUES (?, ?, ?, ?, ?);
 
 deleteBookmark:
-DELETE FROM bookmark WHERE id = ?;
+DELETE FROM bookmark WHERE title = ?;

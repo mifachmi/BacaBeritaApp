@@ -44,13 +44,16 @@ kotlin {
             // third-party
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.sqlDelight.runtime)
             implementation(libs.coil.compose)
             implementation(libs.ktor.utils)
 
             // precompose navigation
             implementation(libs.precompose)
             implementation(libs.precompose.viewmodel)
+
+            // sqlDelight extensions
+            implementation(libs.sqlDelight.runtime)
+            implementation(libs.sqlDelight.coroutines)
         }
         iosMain.dependencies {
             implementation(libs.sqlDelight.native.driver)
