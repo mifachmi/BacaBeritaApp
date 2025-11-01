@@ -7,21 +7,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import id.mifachmi.bacaberitaapp.ui.screen.detail.DetailNewsScreen
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
+import moe.tlaster.precompose.navigation.Navigator
 
 @Composable
 fun HomeScreen(
+    navigator: Navigator,
     vm: BreakingNewsViewModel,
     modifier: Modifier
 ) {
-    val navController = rememberNavController()
-
     MaterialTheme {
         Box(
             modifier = modifier,
@@ -36,23 +30,13 @@ fun HomeScreen(
                     // 📰 Content sections
                     // Navigation Bar
                     // Scrollable Horizontally Tabs
-//                    BreakingNews(
-//                        vm = vm,
-//                        navController = navController
-//                    )
-                    NavHost(navController, startDestination = "breakingNews") {
-                        composable("breakingNews") {
-                            BreakingNews(vm = vm, navController = navController)
-                        }
-                        composable(
-                            route = "detailNews/{article}",
-                            arguments = listOf(
-                                navArgument("article") { type = NavType.StringType})
-                            ) { backStackEntry ->
-                            val article = backStackEntry.arguments.toString()
-                            DetailNewsScreen(navController, article) // Pass article
-                        }
-                    }
+
+                    // This NavHost manages the content within the HomeScreen, allowing navigation
+                    // from the breaking news list to the detail screen.
+                    BreakingNews(
+                        vm = vm,
+                        navController = navigator
+                    )
                     // Live Report
                     // Iframe Campaign
                     // Hot Topics

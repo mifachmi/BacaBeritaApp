@@ -4,6 +4,6 @@ enum class Destination(
     val route: String,
     val label: String
 ) {
-    HOME("beranda", "Beranda"),
-    BOOKMARKS("bookmarks", "Bookmarks")
+    HOME("/beranda", "Beranda"),
+    BOOKMARKS("/bookmarks", "Bookmarks")
 }

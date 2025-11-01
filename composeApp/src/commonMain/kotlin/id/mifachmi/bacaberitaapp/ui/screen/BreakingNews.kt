@@ -11,17 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.breaking_news
 import id.mifachmi.bacaberitaapp.ui.component.ArticleCard
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
+import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BreakingNews(
     vm: BreakingNewsViewModel,
-    navController: NavController
+    navController: Navigator
 ) {
     val news = vm.news.collectAsState().value
     LaunchedEffect(Unit) { vm.load() }
@@ -41,7 +41,7 @@ fun BreakingNews(
             ArticleCard(
                 isBreakingNews = true,
                 data = it,
-                onArticleClick = { article -> navController.navigate("detailNews/${article}") },
+                onArticleClick = { article -> navController.navigate("/detailNews/${article.title}") },
                 onShareClick = {article -> print(article.title)},
                 onBookmarkClick = {article -> print(article.title)},
                 onAudioClick = {article -> print(article.title)},

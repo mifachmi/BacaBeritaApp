@@ -22,6 +22,11 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+
+            // --- ADD THIS BLOCK ---
+            // Set the bundle ID for the iOS framework
+            freeCompilerArgs += "-Xbinary=bundleId=id.mifachmi.bacaberitaapp.ComposeApp"
+            // --------------------
         }
     }
     
@@ -29,11 +34,11 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.navigation.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.animation)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -42,12 +47,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
             // third-party
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-            implementation("app.cash.sqldelight:runtime:2.1.0")
-            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
-            implementation("io.ktor:ktor-utils:2.3.11")
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.sqlDelight.runtime)
+            implementation(libs.coil.compose)
+            implementation(libs.ktor.utils)
+
+            // precompose navigation
+            implementation(libs.precompose)
+            implementation(libs.precompose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
