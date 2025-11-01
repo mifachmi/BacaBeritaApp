@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -22,11 +23,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-
-            // --- ADD THIS BLOCK ---
-            // Set the bundle ID for the iOS framework
-            freeCompilerArgs += "-Xbinary=bundleId=id.mifachmi.bacaberitaapp.ComposeApp"
-            // --------------------
         }
     }
     
@@ -34,6 +30,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sqlDelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -43,8 +40,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
 
             // third-party
             implementation(libs.kotlinx.serialization.json)
@@ -57,8 +52,23 @@ kotlin {
             implementation(libs.precompose)
             implementation(libs.precompose.viewmodel)
         }
+        iosMain.dependencies {
+            implementation(libs.sqlDelight.native.driver)
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class).configureEach {
+            binaries.all {
+                linkerOpts("-lsqlite3") // ✅ this links the native SQLite library
+            }
+        }
+        targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach{
+            it.binaries.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.Framework>()
+                .forEach { lib ->
+                    lib.isStatic = false
+                    lib.linkerOpts.add("-lsqlite3")
+                }
         }
     }
 
@@ -93,6 +103,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("id.mifachmi.bacaberitaapp.database")
+        }
+    }
+    linkSqlite.set(true)
 }
 
 dependencies {

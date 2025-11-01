@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import id.mifachmi.bacaberitaapp.di.createDriverFactory
 import id.mifachmi.bacaberitaapp.navigation.AppNavHost
 import id.mifachmi.bacaberitaapp.navigation.Destination
 import id.mifachmi.bacaberitaapp.util.JsonLoader
@@ -28,6 +29,9 @@ fun App() {
         val navigator = rememberNavigator()
         val startDestination = Destination.HOME
         val vm = remember { BreakingNewsViewModel(loader = JsonLoader()) }
+
+        // --- Create the driver factory using the platform-agnostic function ---
+        val driverFactory = createDriverFactory() // <-- USE your new function
 
         // Get current route from PreCompose
         val currentEntry by navigator.currentEntry.collectAsState(null)
@@ -65,7 +69,8 @@ fun App() {
                 navigator,
                 startDestination,
                 Modifier.padding(contentPadding),
-                vm
+                vm,
+                driverFactory
             )
         }
     }

@@ -1,7 +1,11 @@
 package id.mifachmi.bacaberitaapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import id.mifachmi.bacaberitaapp.data.local.BookmarkRepository
+import id.mifachmi.bacaberitaapp.data.local.DatabaseDriverFactory
+import id.mifachmi.bacaberitaapp.database.AppDatabase
 import id.mifachmi.bacaberitaapp.ui.screen.BookmarksScreen
 import id.mifachmi.bacaberitaapp.ui.screen.HomeScreen
 import id.mifachmi.bacaberitaapp.ui.screen.detail.DetailNewsScreen
@@ -16,8 +20,16 @@ fun AppNavHost(
     navigator: Navigator,
     startDestination: Destination,
     modifier: Modifier = Modifier,
-    vm: BreakingNewsViewModel
+    vm: BreakingNewsViewModel,
+    driverFactory: DatabaseDriverFactory
 ) {
+    // The driverFactory is now provided, not created.
+    val bookmarkRepository = remember {
+        val driver = driverFactory.createDriver()
+        val database = AppDatabase(driver)
+        BookmarkRepository(database)
+    }
+
     // Use the PreCompose NavHost
     NavHost(
         navigator = navigator,
@@ -29,7 +41,12 @@ fun AppNavHost(
             HomeScreen(navigator, vm, modifier)
         }
         scene(Destination.BOOKMARKS.route) {
-            BookmarksScreen()
+            BookmarksScreen(
+                bookmarkRepository = bookmarkRepository,
+                onOpenDetail = { articleTitle ->
+                    navigator.navigate("/detailNews/$articleTitle")
+                }
+            )
         }
 
         // Add the detail screen destination HERE
