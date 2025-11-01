@@ -16,6 +16,7 @@ import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.breaking_news
 import id.mifachmi.bacaberitaapp.ui.component.ArticleCard
 import id.mifachmi.bacaberitaapp.util.rememberShareHandler
+import id.mifachmi.bacaberitaapp.util.rememberTextToSpeech
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
 import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.painterResource
@@ -27,6 +28,7 @@ fun BreakingNews(
 ) {
     val news = vm.news.collectAsState().value
     val shareHandler = rememberShareHandler()
+    val textToSpeechHandler = rememberTextToSpeech()
 
     val bookmarkedTitles by vm.bookmarkedTitles.collectAsState()
 
@@ -53,7 +55,9 @@ fun BreakingNews(
                 onArticleClick = { article -> navController.navigate("/detailNews/${article.title}") },
                 onShareClick = { article -> shareHandler.shareText(article.title, "Bagikan Artikel") },
                 onBookmarkClick = { article -> vm.onBookmarkToggled(article) },
-                onAudioClick = { article -> print(article.title) }
+                onAudioClick = { article ->
+                    textToSpeechHandler.speak(article.title)
+                }
             )
         }
 
@@ -68,7 +72,9 @@ fun BreakingNews(
                 onArticleClick = { a -> navController.navigate("/detailNews/${a.title}") },
                 onShareClick = { article -> shareHandler.shareText(article.title, "Bagikan Artikel") },
                 onBookmarkClick = { article -> vm.onBookmarkToggled(article) },
-                onAudioClick = { article -> print(article.title) }
+                onAudioClick = { article ->
+                    textToSpeechHandler.speak(article.title)
+                }
             )
         }
     }
