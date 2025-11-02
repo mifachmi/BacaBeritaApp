@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import id.mifachmi.bacaberitaapp.ui.screen.section.BreakingNewsSection
+import id.mifachmi.bacaberitaapp.ui.screen.section.HotTopicSection
 import id.mifachmi.bacaberitaapp.ui.screen.section.LiveReportSection
 import id.mifachmi.bacaberitaapp.util.JsonLoader
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
+import id.mifachmi.bacaberitaapp.viewmodel.HotTopicViewModel
 import id.mifachmi.bacaberitaapp.viewmodel.LiveReportViewModel
 import moe.tlaster.precompose.navigation.Navigator
 
@@ -25,6 +27,12 @@ fun HomeScreen(
 ) {
     val liveReportViewModel = remember {
         LiveReportViewModel(
+            loader = JsonLoader()
+        )
+    }
+
+    val hotTopicViewModel = remember {
+        HotTopicViewModel(
             loader = JsonLoader()
         )
     }
@@ -44,20 +52,23 @@ fun HomeScreen(
                         vm = vm,
                         navController = navigator
                     )
-                    // Live Report
+
                     LiveReportSection(
                         modifier = Modifier.padding(vertical = 16.dp),
                         vm = liveReportViewModel
                     )
                     // Iframe Campaign
                     // Hot Topics
+                    HotTopicSection(
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        vm = hotTopicViewModel
+                    )
                     // Kabinet
                     // PON Aceh
                     // Ads Banner
                     // Bekasi - gaada
                     // Articles
                     // Ads Banner
-                    // Bottom Navigation
                 }
             }
         }
