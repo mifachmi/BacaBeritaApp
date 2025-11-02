@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import id.mifachmi.bacaberitaapp.ui.screen.section.BreakingNewsSection
 import id.mifachmi.bacaberitaapp.ui.screen.section.LiveReportSection
+import id.mifachmi.bacaberitaapp.util.JsonLoader
 import id.mifachmi.bacaberitaapp.viewmodel.BreakingNewsViewModel
+import id.mifachmi.bacaberitaapp.viewmodel.LiveReportViewModel
 import moe.tlaster.precompose.navigation.Navigator
 
 @Composable
@@ -20,6 +23,12 @@ fun HomeScreen(
     vm: BreakingNewsViewModel,
     modifier: Modifier
 ) {
+    val liveReportViewModel = remember {
+        LiveReportViewModel(
+            loader = JsonLoader()
+        )
+    }
+
     MaterialTheme {
         Box(
             modifier = modifier,
@@ -37,7 +46,8 @@ fun HomeScreen(
                     )
                     // Live Report
                     LiveReportSection(
-                        modifier = Modifier.padding(vertical = 16.dp)
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        vm = liveReportViewModel
                     )
                     // Iframe Campaign
                     // Hot Topics

@@ -17,6 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,12 +32,18 @@ import bacaberitaapp.composeapp.generated.resources.example
 import bacaberitaapp.composeapp.generated.resources.ic_share
 import id.mifachmi.bacaberitaapp.ui.component.LiveReportCard
 import id.mifachmi.bacaberitaapp.ui.component.TimelineList
+import id.mifachmi.bacaberitaapp.viewmodel.LiveReportViewModel
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiveReportSection(
-    modifier: Modifier
+    modifier: Modifier,
+    vm: LiveReportViewModel
 ) {
+    val news = vm.news.collectAsState().value
+
+    LaunchedEffect(Unit) { vm.load() }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -44,7 +52,7 @@ fun LiveReportSection(
         Box {
             Image(
                 painter = painterResource(Res.drawable.example),
-                contentDescription = "Live Report Header",
+                contentDescription = news?.mainArticle?.title,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,45 +63,60 @@ fun LiveReportSection(
                 color = Color.Red,
                 modifier = Modifier.padding(8.dp)
             ) {
-                Text(
-                    text = "Reportase Langsung",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
-                )
+                news?.reportType?.let {
+                    Text(
+                        text = it,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+                    )
+                }
             }
         }
 
         Column(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(
-                text = "Ini Text Kampanye",
-                fontSize = 12.sp,
-                color = Color.Red
-            )
+            news?.mainArticle?.category?.let {
+                Text(
+                    text = it,
+                    fontSize = 12.sp,
+                    color = Color.Red
+                )
+            }
 
-            Text(
-                text = "articleData?.title ?: data.headline",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-            )
+            news?.mainArticle?.title?.let {
+                Text(
+                    text = it,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+                )
+            }
 
-            Text(
-                text = "1 menit yang lalu",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Light
-            )
+            news?.mainArticle?.publishedTime?.let {
+                Text(
+                    text = it,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Light
+                )
+            }
 
-            TimelineList(
-                items = listOf(
-                    "5 menit lalu"  to "Megawati Bernyanyi dan Berjoget saat Kampanye…",
-                    "15 menit lalu" to "Gibran Harap Semua Pendukung di GBK Coblos No 2…"
-                ),
-                modifier = Modifier.height(150.dp).padding(vertical = 4.dp)
-            )
+            val relatedArticles = news?.relatedArticles?.mapNotNull { article ->
+                if (article?.title != null) {
+                    Pair(article.publishedTime, article.title)
+                } else {
+                    null
+                }
+            }
+
+            if (relatedArticles != null) {
+                TimelineList(
+                    items = relatedArticles,
+                    modifier = Modifier.height(180.dp).padding(vertical = 4.dp)
+                )
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -103,24 +126,28 @@ fun LiveReportSection(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Lihat laporan lainnya",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    news?.moreReports?.label?.let {
+                        Text(
+                            text = it,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Text(
-                        text = "5+",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.Red)
-                            .padding(horizontal = 16.dp)
-                    )
+                    news?.moreReports?.count?.let {
+                        Text(
+                            text = it,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.Red)
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
                 }
 
                 IconButton(onClick = { }) {
@@ -132,9 +159,11 @@ fun LiveReportSection(
                 }
             }
 
-            LiveReportCard()
-            LiveReportCard()
-            LiveReportCard()
+            news?.featuredArticles?.forEach { articlesItem ->
+                if (articlesItem != null) {
+                    LiveReportCard(articlesItem = articlesItem)
+                }
+            }
         }
     }
 }

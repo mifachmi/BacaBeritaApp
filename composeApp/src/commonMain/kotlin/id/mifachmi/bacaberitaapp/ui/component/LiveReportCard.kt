@@ -19,11 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bacaberitaapp.composeapp.generated.resources.Res
 import bacaberitaapp.composeapp.generated.resources.example
+import id.mifachmi.bacaberitaapp.data.model.FeaturedArticlesItem
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiveReportCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    articlesItem: FeaturedArticlesItem
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -35,23 +37,28 @@ fun LiveReportCard(
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
         )
-    }
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = "Live Report Card",
-            fontWeight = FontWeight.Bold
-        )
 
-        Image(
-            painter = painterResource(Res.drawable.example),
-            contentDescription = "Live Report Card",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(70.dp)
-                .clip(RoundedCornerShape(4.dp))
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier.fillMaxWidth()
+        ) {
+            articlesItem.title?.let {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
+
+            Image(
+                painter = painterResource(Res.drawable.example),
+                contentDescription = articlesItem.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
+        }
     }
 }
